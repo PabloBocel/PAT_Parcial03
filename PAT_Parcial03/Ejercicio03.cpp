@@ -3,30 +3,38 @@
 #include <unordered_map>
 #include <map>
 
-using namespace std;
-
 TimeMap::TimeMap() {
 }
 
 void TimeMap::set(string key, string value, int timestamp) {
-    data[key].emplace(timestamp, move(value));
+    structure[key].push_back({ value, timestamp });
 }
 
 string TimeMap::get(string key, int timestamp) {
-    auto it = data.find(key);
-    if (it == data.end()) {
+    if (structure.find(key) == structure.end()) {
         return "";
     }
+    return search(structure[key], timestamp);
+}
 
-    const map<int, string>& values = it->second;
+string TimeMap::search(vector<pair<string, int>>& temp, const int& timestamp) {
+    int low = 0;
+    int high = temp.size() - 1;
 
-    auto itValue = values.upper_bound(timestamp);
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
 
-    if (itValue != values.begin()) {
-        --itValue;
-        return itValue->second;
+        if (temp[mid].second > timestamp) {
+            high = mid - 1;
+        }
+        else if (temp[mid].second < timestamp) {
+            low = mid + 1;
+        }
+        else {
+            return temp[mid].first;
+        }
     }
 
-    return "";
+    return high >= 0 ? temp[high].first : "";
 }
 
