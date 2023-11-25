@@ -38,3 +38,10 @@ string TimeMap::search(vector<pair<string, int>>& temp, const int& timestamp) {
     return high >= 0 ? temp[high].first : "";
 }
 
+TimeMap::~TimeMap() {
+    for (auto& entry : structure) {
+        for (auto& pair : entry.second) {
+        }
+    }
+}
+
