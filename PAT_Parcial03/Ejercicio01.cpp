@@ -3,11 +3,7 @@
 
 Node<int>* Ejercicio01::mergeLists(Node<Node<int>*>* lists)
 {
-    auto compare = [](const Node<int>* a, const Node<int>* b) {
-        return a->value < b->value;
-        };
-
-    std::priority_queue<Node<int>*, std::vector<Node<int>*>, decltype(compare)> minHeap(compare);
+    std::priority_queue<Node<int>*, std::vector<Node<int>*>, std::greater<Node<int>*>> minHeap;
 
     Node<Node<int>*>* currentList = lists;
     while (currentList != nullptr) {
@@ -36,6 +32,7 @@ Node<int>* Ejercicio01::mergeLists(Node<Node<int>*>* lists)
 
     return dummy->next;
 }
+
 
 
 

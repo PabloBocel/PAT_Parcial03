@@ -1,47 +1,59 @@
-
 #include "Ejercicio03.h"
-#include <unordered_map>
 #include <map>
+#include <iterator>
 
-TimeMap::TimeMap() {
+
+void TimeMap::set(string key, string value, int timestamp)
+{
+    (*map)[key].emplace_back(new Pair{ timestamp, value });
 }
 
-void TimeMap::set(string key, string value, int timestamp) {
-    structure[key].push_back({ value, timestamp });
+TimeMap::TimeMap()
+{
+    map = new unordered_map<string, vector<Pair*>>();
 }
 
-string TimeMap::get(string key, int timestamp) {
-    if (structure.find(key) == structure.end()) {
+string TimeMap::get(string key, int timestamp)
+{
+    if (map->find(key) == map->end())
         return "";
+
+    vector<Pair*> values = (*map)[key];
+    unsigned int top = values.size();
+    unsigned int bottom = 0;
+    unsigned int middle;
+
+    if (values[bottom]->timestamp > timestamp)
+        return "";
+
+    if (values[top - 1]->timestamp <= timestamp)
+        return values[top - 1]->value;
+
+    middle = (top + bottom) >> 1;
+    while (bottom < top) {
+        if (values[middle]->timestamp == timestamp)
+            return values[middle]->value;
+
+        if (values[middle]->timestamp < timestamp)
+            bottom = middle + 1;
+        else
+            top = middle;
+
+        middle = (top + bottom) >> 1;
     }
-    return search(structure[key], timestamp);
+
+    return values[middle]->value;
 }
 
-string TimeMap::search(vector<pair<string, int>>& temp, const int& timestamp) {
-    int low = 0;
-    int high = temp.size() - 1;
 
-    while (low <= high) {
-        int mid = low + (high - low) / 2;
-
-        if (temp[mid].second > timestamp) {
-            high = mid - 1;
-        }
-        else if (temp[mid].second < timestamp) {
-            low = mid + 1;
-        }
-        else {
-            return temp[mid].first;
-        }
-    }
-
-    return high >= 0 ? temp[high].first : "";
-}
-
-TimeMap::~TimeMap() {
-    for (auto& entry : structure) {
+TimeMap::~TimeMap()
+{
+    for (auto& entry : *map) {
         for (auto& pair : entry.second) {
+            delete pair;
         }
     }
+    delete map;
 }
+
 
