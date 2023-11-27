@@ -13,12 +13,15 @@ TimeMap::TimeMap()
     map = new unordered_map<string, vector<Pair*>>();
 }
 
+
+
 string TimeMap::get(string key, int timestamp)
 {
     if (map->find(key) == map->end())
         return "";
 
     vector<Pair*> values = (*map)[key];
+
     unsigned int top = values.size();
     unsigned int bottom = 0;
     unsigned int middle;
@@ -29,8 +32,9 @@ string TimeMap::get(string key, int timestamp)
     if (values[top - 1]->timestamp <= timestamp)
         return values[top - 1]->value;
 
-    middle = (top + bottom) >> 1;
     while (bottom < top) {
+        middle = (top + bottom) >> 1;
+
         if (values[middle]->timestamp == timestamp)
             return values[middle]->value;
 
@@ -38,13 +42,10 @@ string TimeMap::get(string key, int timestamp)
             bottom = middle + 1;
         else
             top = middle;
-
-        middle = (top + bottom) >> 1;
     }
 
     return values[middle]->value;
 }
-
 
 TimeMap::~TimeMap()
 {

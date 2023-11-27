@@ -3,7 +3,13 @@
 
 Node<int>* Ejercicio01::mergeLists(Node<Node<int>*>* lists)
 {
-    std::priority_queue<Node<int>*, std::vector<Node<int>*>, std::greater<Node<int>*>> minHeap;
+    struct CompareNodes {
+        bool operator()(const Node<int>* a, const Node<int>* b) {
+            return a->value > b->value;
+        }
+    };
+
+    std::priority_queue<Node<int>*, std::vector<Node<int>*>, CompareNodes> minHeap;
 
     Node<Node<int>*>* currentList = lists;
     while (currentList != nullptr) {
@@ -17,22 +23,19 @@ Node<int>* Ejercicio01::mergeLists(Node<Node<int>*>* lists)
     Node<int>* current = dummy;
 
     while (!minHeap.empty()) {
-        Node<int>* node = minHeap.top();
+        Node<int>* minNode = minHeap.top();
         minHeap.pop();
 
-        current->next = new Node<int>{ node->value, nullptr };
+        current->next = new Node<int>{ minNode->value, nullptr };
         current = current->next;
 
-        if (node->next) {
-            minHeap.push(node->next);
+        if (minNode->next != nullptr) {
+            minHeap.push(minNode->next);
         }
     }
 
-    current->next = nullptr;
-
     return dummy->next;
 }
-
 
 
 
